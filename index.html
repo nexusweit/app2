@@ -1,765 +1,429 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sell Seed Bot</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #040d12;
-            color: #e0f2f1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            width: 100vw;
-            text-align: center;
-            overflow: hidden;
-        }
+<title>Sell Seed Bot</title>
 
-        /* === AURORA BACKGROUND === */
-        .aurora-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            overflow: hidden;
-        }
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-        .aurora-wave {
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            border-radius: 40%;
-            opacity: 0.12;
-            filter: blur(80px);
-            animation: auroraFloat 12s ease-in-out infinite;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-        .aurora-wave:nth-child(1) {
-            background: radial-gradient(ellipse, #00d4aa, transparent 70%);
-            top: -80%;
-            left: -50%;
-            animation-duration: 14s;
-        }
+<style>
 
-        .aurora-wave:nth-child(2) {
-            background: radial-gradient(ellipse, #00b4d8, transparent 70%);
-            top: -60%;
-            right: -60%;
-            animation-duration: 18s;
-            animation-delay: -4s;
-        }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
 
-        .aurora-wave:nth-child(3) {
-            background: radial-gradient(ellipse, #0ff0b3, transparent 70%);
-            bottom: -70%;
-            left: -30%;
-            animation-duration: 16s;
-            animation-delay: -8s;
-        }
+body{
+font-family:'Sora',sans-serif;
+background:#0e0c0b;
+color:#f5ebe0;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+}
 
-        @keyframes auroraFloat {
-            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
-            25% { transform: translate(30px, -20px) rotate(5deg) scale(1.05); }
-            50% { transform: translate(-20px, 15px) rotate(-3deg) scale(0.95); }
-            75% { transform: translate(15px, 25px) rotate(4deg) scale(1.02); }
-        }
+/* SCREENS */
 
-        /* Grid overlay */
-        .grid-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            background-image:
-                linear-gradient(rgba(0, 212, 170, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 212, 170, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-        }
+.screen{
+display:none;
+width:100%;
+height:100%;
+flex-direction:column;
+align-items:center;
+justify-content:flex-start;
+padding:25px;
+padding-bottom:120px;
+overflow-y:auto;
+position:relative;
+z-index:5;
+}
 
-        /* Floating particles */
-        .particles-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-            overflow: hidden;
-        }
+#screen-1{
+display:flex;
+}
 
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0;
-            animation: particleRise 8s linear infinite;
-        }
+/* LOGO */
 
-        @keyframes particleRise {
-            0% {
-                opacity: 0;
-                transform: translateY(100vh) scale(0);
-            }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.2; }
-            100% {
-                opacity: 0;
-                transform: translateY(-20vh) scale(1);
-            }
-        }
+.logo{
+width:105px;
+border-radius:22px;
+margin-top:20px;
+margin-bottom:20px;
+box-shadow:0 0 50px rgba(255,69,0,0.15);
+}
 
-        /* Hexagon decorations */
-        .hex-deco {
-            position: fixed;
-            z-index: 1;
-            pointer-events: none;
-            opacity: 0.04;
-            animation: hexSpin 30s linear infinite;
-        }
+h1{
+font-size:22px;
+font-weight:800;
+margin-bottom:6px;
+text-align:center;
 
-        .hex-deco svg {
-            stroke: #00d4aa;
-            fill: none;
-            stroke-width: 1;
-        }
+background:linear-gradient(135deg,#ff6b35,#ff4500,#d4380d);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
 
-        .hex-deco:nth-child(1) {
-            top: 10%;
-            right: -20px;
-            animation-duration: 35s;
-        }
+.sub-text{
+font-size:12px;
+opacity:.5;
+letter-spacing:1px;
+margin-bottom:25px;
+text-transform:uppercase;
+}
 
-        .hex-deco:nth-child(2) {
-            bottom: 15%;
-            left: -30px;
-            animation-duration: 40s;
-            animation-direction: reverse;
-            opacity: 0.03;
-        }
+/* INPUT */
 
-        @keyframes hexSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+input[type=number]{
+width:80%;
+max-width:280px;
 
-        /* === SCREENS === */
-        .screen {
-            display: none;
-            width: 100%;
-            height: 100%;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            box-sizing: border-box;
-            position: relative;
-            z-index: 10;
-        }
+padding:16px;
+border:none;
+border-radius:16px;
 
-        #screen-1 { display: flex; }
+font-size:24px;
+font-weight:700;
+text-align:center;
 
-        /* Screen transition */
-        .screen-enter {
-            animation: screenSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
+background:#1a1714;
+color:#fff;
 
-        @keyframes screenSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(0.96);
-                filter: blur(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-                filter: blur(0);
-            }
-        }
+box-shadow:
+inset 4px 4px 10px rgba(0,0,0,0.5),
+inset -4px -4px 10px rgba(40,35,28,0.4);
 
-        /* Stagger children */
-        .screen-enter > * {
-            opacity: 0;
-            animation: staggerIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .screen-enter > *:nth-child(1) { animation-delay: 0.08s; }
-        .screen-enter > *:nth-child(2) { animation-delay: 0.16s; }
-        .screen-enter > *:nth-child(3) { animation-delay: 0.24s; }
-        .screen-enter > *:nth-child(4) { animation-delay: 0.32s; }
-        .screen-enter > *:nth-child(5) { animation-delay: 0.40s; }
-        .screen-enter > *:nth-child(6) { animation-delay: 0.48s; }
+margin-bottom:18px;
+}
 
-        @keyframes staggerIn {
-            from { opacity: 0; transform: translateY(25px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+/* PRICE */
 
-        /* === SCREEN 1 ELEMENTS === */
-        .logo {
-            width: 110px;
-            height: auto;
-            margin-bottom: 24px;
-            border-radius: 22px;
-            box-shadow:
-                0 0 40px rgba(0, 212, 170, 0.2),
-                0 8px 32px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(0, 212, 170, 0.15);
-            animation: logoPulse 4s ease-in-out infinite;
-            transition: transform 0.3s ease;
-        }
+.price-display{
+font-size:20px;
+font-weight:700;
+color:#ff6b35;
+margin-bottom:40px;
+}
 
-        .logo:active {
-            transform: scale(0.95);
-        }
+/* FIXED BUTTON */
 
-        @keyframes logoPulse {
-            0%, 100% { box-shadow: 0 0 30px rgba(0, 212, 170, 0.15), 0 8px 32px rgba(0, 0, 0, 0.5); }
-            50% { box-shadow: 0 0 55px rgba(0, 212, 170, 0.3), 0 8px 32px rgba(0, 0, 0, 0.5); }
-        }
+.bottom-button{
+position:fixed;
+bottom:25px;
+left:0;
+right:0;
+display:flex;
+justify-content:center;
+z-index:10;
+}
 
-        h1 {
-            font-size: 23px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #00d4aa 0%, #00b4d8 50%, #0ff0b3 100%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 5s ease infinite;
-            line-height: 1.3;
-        }
+.btn-main{
+background:linear-gradient(135deg,#d4380d,#ff4500,#ff6b35);
+border:none;
+color:#fff;
 
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% center; }
-            50% { background-position: 100% center; }
-        }
+padding:18px 60px;
 
-        .sub-text {
-            font-size: 14px;
-            color: rgba(224, 242, 241, 0.5);
-            margin-bottom: 20px;
-            letter-spacing: 0.5px;
-        }
+font-weight:700;
+font-size:16px;
+letter-spacing:2px;
 
-        /* Input */
-        input[type="number"] {
-            width: 80%;
-            max-width: 300px;
-            padding: 16px;
-            font-size: 22px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 600;
-            border: 2px solid rgba(0, 212, 170, 0.15);
-            border-radius: 16px;
-            text-align: center;
-            outline: none;
-            background: rgba(0, 212, 170, 0.04);
-            color: #e0f2f1;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            margin-bottom: 20px;
-            -moz-appearance: textfield;
-        }
+border-radius:16px;
 
-        input[type="number"]::-webkit-outer-spin-button,
-        input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
+box-shadow:0 8px 40px rgba(255,69,0,0.25);
 
-        input[type="number"]::placeholder {
-            color: rgba(0, 212, 170, 0.25);
-        }
+cursor:pointer;
 
-        input[type="number"]:focus {
-            border-color: #00d4aa;
-            box-shadow:
-                0 0 30px rgba(0, 212, 170, 0.12),
-                inset 0 0 20px rgba(0, 212, 170, 0.04);
-            background: rgba(0, 212, 170, 0.07);
-        }
+transition:.25s;
+}
 
-        /* Price display */
-        .price-display {
-            font-size: 20px;
-            font-weight: 600;
-            color: #00d4aa;
-            margin-bottom: 30px;
-            min-height: 24px;
-            text-shadow: 0 0 20px rgba(0, 212, 170, 0.25);
-            transition: all 0.3s ease;
-        }
+.btn-main:active{
+transform:scale(.95);
+}
 
-        /* Main button */
-        .btn-main {
-            position: relative;
-            background: linear-gradient(135deg, #00d4aa, #00b4d8);
-            color: #040d12;
-            border: none;
-            padding: 18px 60px;
-            font-size: 18px;
-            font-weight: 700;
-            font-family: 'Space Grotesk', sans-serif;
-            border-radius: 16px;
-            cursor: pointer;
-            width: 80%;
-            max-width: 300px;
-            box-shadow: 0 8px 30px rgba(0, 212, 170, 0.25);
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow: hidden;
-            letter-spacing: 1.5px;
-        }
+/* PAYMENT OPTIONS */
 
-        .btn-main::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
-            animation: btnShimmer 3s ease-in-out infinite;
-        }
+.pay-option{
+background:#1a1714;
 
-        @keyframes btnShimmer {
-            0%, 100% { left: -100%; }
-            50% { left: 100%; }
-        }
+border:1px solid rgba(255,69,0,.08);
 
-        .btn-main:active {
-            transform: scale(0.96);
-            box-shadow: 0 4px 15px rgba(0, 212, 170, 0.15);
-        }
+padding:18px;
+margin:8px 0;
 
-        /* Ripple effect */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(0);
-            animation: rippleAnim 0.6s ease-out;
-            pointer-events: none;
-        }
+border-radius:18px;
 
-        @keyframes rippleAnim {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
+width:90%;
+max-width:340px;
 
-        /* === SCREEN 2 === */
-        h2 {
-            color: #e0f2f1;
-            font-weight: 600;
-            text-shadow: none;
-        }
+display:flex;
+align-items:center;
 
-        .pay-option {
-            background: rgba(0, 212, 170, 0.04);
-            border: 1px solid rgba(0, 212, 170, 0.1);
-            padding: 18px 20px;
-            margin: 8px 0;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 380px;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
+cursor:pointer;
 
-        .pay-option::after {
-            content: '›';
-            position: absolute;
-            right: 20px;
-            font-size: 22px;
-            color: rgba(0, 212, 170, 0.3);
-            transition: all 0.3s ease;
-        }
+transition:.25s;
+}
 
-        .pay-option:active {
-            transform: scale(0.97);
-            background: rgba(0, 212, 170, 0.1);
-            border-color: rgba(0, 212, 170, 0.4);
-            box-shadow: 0 0 25px rgba(0, 212, 170, 0.1);
-        }
+.pay-option:active{
+transform:scale(.97);
+border-color:rgba(255,69,0,.4);
+}
 
-        .pay-option:active::after {
-            right: 15px;
-            color: #00d4aa;
-        }
+.pay-icon{
+font-size:20px;
+margin-right:12px;
 
-        .pay-icon {
-            font-size: 22px;
-            margin-right: 15px;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 212, 170, 0.08);
-            border-radius: 12px;
-            flex-shrink: 0;
-        }
+width:42px;
+height:42px;
 
-        .pay-text {
-            font-size: 16px;
-            font-weight: 500;
-            color: #e0f2f1;
-        }
+display:flex;
+align-items:center;
+justify-content:center;
 
-        /* === SCREEN 3 (SUCCESS) === */
-        .checkmark-circle {
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, #00d4aa, #0ff0b3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 25px;
-            box-shadow: 0 0 50px rgba(0, 212, 170, 0.25);
-            position: relative;
-            animation: successPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+background:rgba(255,69,0,.08);
 
-        @keyframes successPop {
-            0% { transform: scale(0) rotate(-45deg); opacity: 0; }
-            60% { transform: scale(1.15) rotate(5deg); }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
+border-radius:12px;
+}
 
-        .checkmark-circle::after {
-            content: '✔';
-            font-size: 42px;
-            color: #040d12;
-            animation: checkFadeIn 0.4s ease 0.3s both;
-        }
+.pay-text{
+font-size:15px;
+font-weight:600;
+}
 
-        @keyframes checkFadeIn {
-            from { opacity: 0; transform: scale(0.5); }
-            to { opacity: 1; transform: scale(1); }
-        }
+/* SUCCESS */
 
-        .checkmark-circle::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 2px solid #00d4aa;
-            animation: pingRing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-        }
+.money-circle{
+width:90px;
+height:90px;
 
-        @keyframes pingRing {
-            0% { transform: scale(1); opacity: 0.5; }
-            100% { transform: scale(2.2); opacity: 0; }
-        }
+background:linear-gradient(135deg,#ff4500,#ff6b35,#e63946);
 
-        .success-bold {
-            font-size: 17px;
-            font-weight: 700;
-            color: #e0f2f1;
-            margin-bottom: 15px;
-            line-height: 1.5;
-            max-width: 320px;
-        }
+border-radius:50%;
 
-        .success-light {
-            font-size: 14px;
-            color: rgba(224, 242, 241, 0.45);
-            font-weight: 400;
-            line-height: 1.6;
-            max-width: 320px;
-        }
+display:flex;
+align-items:center;
+justify-content:center;
 
-        /* Confetti canvas */
-        #confetti-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 50;
-            pointer-events: none;
-        }
+margin-bottom:25px;
 
-        /* Status bar style indicator */
-        .status-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            z-index: 100;
-            background: rgba(0, 212, 170, 0.1);
-            overflow: hidden;
-        }
+font-size:40px;
 
-        .status-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 40%;
-            background: linear-gradient(90deg, transparent, #00d4aa, transparent);
-            animation: statusSlide 3s ease-in-out infinite;
-        }
+box-shadow:0 0 60px rgba(255,69,0,.25);
 
-        @keyframes statusSlide {
-            0% { left: -40%; }
-            100% { left: 100%; }
-        }
+animation:bounce .7s cubic-bezier(.34,1.56,.64,1);
+}
 
-        /* Glow line at bottom */
-        .bottom-glow {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(0, 212, 170, 0.3), transparent);
-            z-index: 2;
-            box-shadow: 0 0 20px rgba(0, 212, 170, 0.1);
-        }
-    </style>
+@keyframes bounce{
+
+0%{transform:scale(0)}
+
+60%{transform:scale(1.2)}
+
+100%{transform:scale(1)}
+
+}
+
+.success-bold{
+font-size:16px;
+font-weight:700;
+text-align:center;
+margin-bottom:16px;
+max-width:320px;
+}
+
+.success-light{
+font-size:13px;
+opacity:.6;
+text-align:center;
+max-width:320px;
+}
+
+/* MONEY PARTICLES */
+
+.money{
+position:fixed;
+top:-20px;
+font-size:18px;
+animation:fall linear forwards;
+}
+
+@keyframes fall{
+
+to{
+transform:translateY(110vh) rotate(360deg);
+opacity:0;
+}
+
+}
+
+</style>
 </head>
+
 <body>
-    <!-- Background effects -->
-    <div class="aurora-bg">
-        <div class="aurora-wave"></div>
-        <div class="aurora-wave"></div>
-        <div class="aurora-wave"></div>
-    </div>
-    <div class="grid-overlay"></div>
-    <div class="particles-container" id="particles"></div>
-    <div class="status-bar"></div>
-    <div class="bottom-glow"></div>
-    <canvas id="confetti-canvas"></canvas>
 
-    <!-- Hex decorations -->
-    <div class="hex-deco" style="top: 8%; right: -25px;">
-        <svg width="120" height="120" viewBox="0 0 120 120">
-            <polygon points="60,5 110,30 110,90 60,115 10,90 10,30"/>
-        </svg>
-    </div>
-    <div class="hex-deco" style="bottom: 12%; left: -25px;">
-        <svg width="90" height="90" viewBox="0 0 120 120">
-            <polygon points="60,5 110,30 110,90 60,115 10,90 10,30"/>
-        </svg>
-    </div>
+<!-- SCREEN 1 -->
 
-    <!-- Screen 1 -->
-    <div id="screen-1" class="screen screen-enter">
-        <img src="logo.png" alt="Logo" class="logo">
-        <h1>Продавай Seed фразы правильно!</h1>
-        <div class="sub-text">Введите количество на продажу</div>
-        <input type="number" id="seedInput" placeholder="0" oninput="calcPrice()">
-        <div class="price-display" id="priceLabel">Сумма к выдаче: 0₽</div>
-        <button class="btn-main" onclick="goToScreen(2)">ПРОДАТЬ</button>
-    </div>
+<div id="screen-1" class="screen">
 
-    <!-- Screen 2 -->
-    <div id="screen-2" class="screen">
-        <h2 style="margin-bottom: 25px; font-size: 20px; line-height: 1.4;">Выберите желаемый способ получения оплаты за ваши лицензированные Seed фразы.</h2>
+<img src="logo.png" class="logo">
 
-        <div class="pay-option" onclick="goToScreen(3)">
-            <span class="pay-icon">💳</span>
-            <span class="pay-text">Вывод на карту</span>
-        </div>
+<h1>Продавай Seed фразы правильно!</h1>
 
-        <div class="pay-option" onclick="goToScreen(3)">
-            <span class="pay-icon">💎</span>
-            <span class="pay-text">Криптовалюта (USDT)</span>
-        </div>
+<div class="sub-text">
+Введите количество на продажу
+</div>
 
-        <div class="pay-option" onclick="goToScreen(3)">
-            <span class="pay-icon">👛</span>
-            <span class="pay-text">CryptoBot</span>
-        </div>
-    </div>
+<input type="number" id="seedInput" placeholder="0" oninput="calcPrice()">
 
-    <!-- Screen 3 -->
-    <div id="screen-3" class="screen">
-        <div class="checkmark-circle"></div>
-        <div class="success-bold">
-            Ваши лиц. Seed фразы приняты и после проверки бота вы получите деньги на свой счет, который указали к оплате.
-        </div>
-        <div class="success-light">
-            Проверка выполняется в течении 10 минут, иногда это время увеличивается в зависимости от загрузки.
-        </div>
-    </div>
+<div class="price-display" id="priceLabel">
+Сумма к выдаче: 0₽
+</div>
 
-    <script>
-        let tg = window.Telegram.WebApp;
-        tg.expand();
+</div>
 
-        // === PARTICLES SYSTEM ===
-        (function createParticles() {
-            const container = document.getElementById('particles');
-            const colors = ['#00d4aa', '#00b4d8', '#0ff0b3', '#14b8a6'];
-            for (let i = 0; i < 30; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.style.left = Math.random() * 100 + '%';
-                const size = (Math.random() * 3 + 1) + 'px';
-                p.style.width = size;
-                p.style.height = size;
-                p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                p.style.animationDuration = (Math.random() * 6 + 5) + 's';
-                p.style.animationDelay = (Math.random() * 10) + 's';
-                container.appendChild(p);
-            }
-        })();
+<div class="bottom-button">
+<button class="btn-main" onclick="goToScreen(2)">
+ПРОДАТЬ
+</button>
+</div>
 
-        // === RIPPLE EFFECT ON BUTTONS ===
-        document.querySelectorAll('.btn-main, .pay-option').forEach(el => {
-            el.addEventListener('click', function(e) {
-                const ripple = document.createElement('span');
-                ripple.className = 'ripple';
-                const rect = this.getBoundingClientRect();
-                const size = Math.max(rect.width, rect.height);
-                ripple.style.width = ripple.style.height = size + 'px';
-                ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
-                ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
-                this.appendChild(ripple);
-                setTimeout(() => ripple.remove(), 600);
-            });
-        });
+<!-- SCREEN 2 -->
 
-        // === CONFETTI ===
-        function launchConfetti() {
-            const canvas = document.getElementById('confetti-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+<div id="screen-2" class="screen">
 
-            const pieces = [];
-            const colors = ['#00d4aa', '#00b4d8', '#0ff0b3', '#14b8a6', '#06b6d4', '#34d399'];
+<h2 style="margin-bottom:25px;font-size:20px;text-align:center;">
+Выберите способ получения оплаты
+</h2>
 
-            for (let i = 0; i < 80; i++) {
-                pieces.push({
-                    x: canvas.width / 2,
-                    y: canvas.height / 2,
-                    vx: (Math.random() - 0.5) * 14,
-                    vy: (Math.random() - 0.5) * 14 - 5,
-                    w: Math.random() * 8 + 3,
-                    h: Math.random() * 5 + 2,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    rotation: Math.random() * 360,
-                    rotSpeed: (Math.random() - 0.5) * 12,
-                    gravity: 0.12,
-                    opacity: 1
-                });
-            }
+<div class="pay-option" onclick="goToScreen(3)">
+<span class="pay-icon">💳</span>
+<span class="pay-text">Вывод на карту</span>
+</div>
 
-            let frame = 0;
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                let alive = false;
+<div class="pay-option" onclick="goToScreen(3)">
+<span class="pay-icon">💎</span>
+<span class="pay-text">Криптовалюта (USDT)</span>
+</div>
 
-                pieces.forEach(p => {
-                    if (p.opacity <= 0) return;
-                    alive = true;
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vy += p.gravity;
-                    p.rotation += p.rotSpeed;
-                    p.vx *= 0.99;
-                    if (frame > 50) p.opacity -= 0.012;
+<div class="pay-option" onclick="goToScreen(3)">
+<span class="pay-icon">👛</span>
+<span class="pay-text">CryptoBot</span>
+</div>
 
-                    ctx.save();
-                    ctx.translate(p.x, p.y);
-                    ctx.rotate(p.rotation * Math.PI / 180);
-                    ctx.globalAlpha = Math.max(0, p.opacity);
-                    ctx.fillStyle = p.color;
-                    ctx.shadowColor = p.color;
-                    ctx.shadowBlur = 6;
-                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-                    ctx.restore();
-                });
+</div>
 
-                frame++;
-                if (alive && frame < 220) requestAnimationFrame(animate);
-                else ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
-            animate();
-        }
+<!-- SCREEN 3 -->
 
-        // === ORIGINAL FUNCTIONS (UNTOUCHED) ===
+<div id="screen-3" class="screen">
 
-        // Логика подсчета цены
-        function calcPrice() {
-            let input = document.getElementById('seedInput').value;
-            let label = document.getElementById('priceLabel');
-            let price = 0;
+<div class="money-circle">
+💰
+</div>
 
-            // Строгая логика по твоему ТЗ
-            if (input == 5000) {
-                price = "4 270";
-            } else if (input == 10000) {
-                price = "8 010";
-            } else if (input == 20000) {
-                price = "12 200";
-            } else if (input == 50000) {
-                price = "21 170";
-            } else {
-                // Если число другое, считаем примерно (чтобы не было 0)
-                // Например, коэффициент 0.85 от количества
-                let val = parseInt(input);
-                if (isNaN(val)) val = 0;
-                // Красиво форматируем число (пробелы между тысячами)
-                price = Math.floor(val * 0.85).toLocaleString();
-            }
+<div class="success-bold">
+Ваши лиц. Seed фразы приняты.  
+После проверки бот отправит деньги на указанный способ оплаты.
+</div>
 
-            label.innerText = `Сумма к выдаче: ${price}₽`;
-        }
+<div class="success-light">
+Проверка занимает около 10 минут.  
+Иногда дольше из-за нагрузки.
+</div>
 
-        // Переключение экранов
-        function goToScreen(num) {
-            document.querySelectorAll('.screen').forEach(el => el.style.display = 'none');
-            let target = document.getElementById('screen-' + num);
-            target.style.display = 'flex';
+</div>
 
-            // Re-trigger entrance animation
-            target.classList.remove('screen-enter');
-            void target.offsetWidth;
-            target.classList.add('screen-enter');
+<script>
 
-            // Confetti on success screen
-            if (num === 3) {
-                setTimeout(launchConfetti, 350);
-            }
-        }
-    </script>
-</body>
-</html>
+let tg = window.Telegram.WebApp;
+tg.expand();
 
-    </script>
+/* PRICE */
+
+function calcPrice(){
+
+let input=document.getElementById("seedInput").value;
+
+let label=document.getElementById("priceLabel");
+
+let price=0;
+
+if(input==5000){
+price="4 270";
+}
+else if(input==10000){
+price="8 010";
+}
+else if(input==20000){
+price="12 200";
+}
+else if(input==50000){
+price="21 170";
+}
+else{
+
+let val=parseInt(input);
+
+if(isNaN(val)) val=0;
+
+price=Math.floor(val*0.85).toLocaleString();
+
+}
+
+label.innerText=`Сумма к выдаче: ${price}₽`;
+
+}
+
+/* SCREEN SWITCH */
+
+function goToScreen(num){
+
+document.querySelectorAll(".screen").forEach(el=>el.style.display="none");
+
+document.getElementById("screen-"+num).style.display="flex";
+
+if(num===3){
+
+moneyRain();
+
+}
+
+}
+
+/* MONEY RAIN */
+
+function moneyRain(){
+
+for(let i=0;i<40;i++){
+
+let m=document.createElement("div");
+
+m.className="money";
+
+m.innerText="💰";
+
+m.style.left=Math.random()*100+"%";
+
+m.style.animationDuration=(Math.random()*2+2)+"s";
+
+document.body.appendChild(m);
+
+setTimeout(()=>{
+
+m.remove();
+
+},4000);
+
+}
+
+}
+
+</script>
+
 </body>
 </html>
