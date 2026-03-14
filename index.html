@@ -275,7 +275,7 @@ max-width:320px;
 
 </div>
 
-<div class="bottom-button">
+<div class="bottom-button" id="sellBtn">
 <button class="btn-main" onclick="goToScreen(2)">
 ПРОДАТЬ
 </button>
@@ -372,9 +372,15 @@ document.querySelectorAll(".screen").forEach(el=>el.style.display="none");
 
 document.getElementById("screen-"+num).style.display="flex";
 
+/* скрываем кнопку */
+document.getElementById("sellBtn").style.display="none";
+
+/* закрываем клавиатуру */
+document.getElementById("seedInput").blur();
+
 }
 
-/* INPUT FIXES */
+/* INPUT FIX */
 
 const input = document.getElementById("seedInput");
 const button = document.querySelector(".bottom-button");
@@ -387,8 +393,6 @@ input.addEventListener("blur",()=>{
 button.classList.remove("hidden");
 });
 
-/* close keyboard */
-
 document.addEventListener("touchstart",(e)=>{
 if(!input.contains(e.target)){
 input.blur();
@@ -399,4 +403,3 @@ input.blur();
 
 </body>
 </html>
-
