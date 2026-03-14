@@ -175,24 +175,35 @@ transform:translateY(110vh) rotate(360deg);
 opacity:0;
 }
 
-/* LOADING OVERLAY */
+/* LOADING OVERLAY WITH PROGRESS BAR */
 #loadingOverlay{
 position:fixed;
 top:0;left:0;width:100%;height:100%;
 background:rgba(0,0,0,0.85);
 display:flex;justify-content:center;align-items:center;
+flex-direction:column;
 z-index:100;
 opacity:0;pointer-events:none;transition:.3s;
 }
 #loadingOverlay.active{opacity:1;pointer-events:auto;}
-.loader-circle{
-width:50px;height:50px;
-border:5px solid #ff4500;
-border-top:5px solid #1a1714;
-border-radius:50%;
-animation:spin 1s linear infinite;
+
+.progress-container{
+width:60%;
+max-width:300px;
+height:10px;
+background:rgba(255,69,0,0.2);
+border-radius:5px;
+overflow:hidden;
+margin-top:10px;
 }
-@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+.progress-bar{
+width:0%;
+height:100%;
+background:linear-gradient(90deg,#ff6b35,#ff4500,#d4380d);
+border-radius:5px;
+transition:width 0.5s ease-out;
+}
+
 </style>
 </head>
 
@@ -238,8 +249,12 @@ animation:spin 1s linear infinite;
 </div>
 </div>
 
-<!-- LOADING OVERLAY -->
-<div id="loadingOverlay"><div class="loader-circle"></div></div>
+<!-- LOADING OVERLAY WITH PROGRESS BAR -->
+<div id="loadingOverlay">
+<div class="progress-container">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+</div>
 
 <script>
 let tg = window.Telegram.WebApp;
@@ -280,16 +295,25 @@ price=Math.floor(val*0.85);
 animatePrice(price);
 }
 
-/* SCREEN SWITCH WITH LOADING */
+/* SCREEN SWITCH WITH LOADING AND PROGRESS */
 function goToScreen(num){
 document.getElementById("sellBtn").style.display="none";
-document.getElementById("loadingOverlay").classList.add("active");
-setTimeout(()=>{
+const overlay = document.getElementById("loadingOverlay");
+const bar = document.getElementById("progressBar");
+overlay.classList.add("active");
+bar.style.width = '0%';
+let progress = 0;
+let interval = setInterval(()=>{
+progress += 5; // 0.5-0.7s total
+bar.style.width = progress+'%';
+if(progress>=100){
+clearInterval(interval);
 document.querySelectorAll(".screen").forEach(el=>el.style.display="none");
 document.getElementById("screen-"+num).style.display="flex";
-document.getElementById("loadingOverlay").classList.remove("active");
+overlay.classList.remove("active");
 if(num===3){moneyRain();}
-},500); // 0.5 секунды загрузка
+}
+},25);
 }
 
 /* MONEY RAIN */
