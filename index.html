@@ -11,12 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
 font-family:'Sora',sans-serif;
@@ -30,7 +25,6 @@ overflow:hidden;
 }
 
 /* SCREENS */
-
 .screen{
 display:none;
 width:100%;
@@ -44,13 +38,9 @@ overflow-y:auto;
 position:relative;
 z-index:5;
 }
-
-#screen-1{
-display:flex;
-}
+#screen-1{display:flex;}
 
 /* LOGO */
-
 .logo{
 width:105px;
 border-radius:22px;
@@ -58,18 +48,15 @@ margin-top:20px;
 margin-bottom:20px;
 box-shadow:0 0 50px rgba(255,69,0,0.15);
 }
-
 h1{
 font-size:22px;
 font-weight:800;
 margin-bottom:6px;
 text-align:center;
-
 background:linear-gradient(135deg,#ff6b35,#ff4500,#d4380d);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
-
 .sub-text{
 font-size:12px;
 opacity:.5;
@@ -79,31 +66,24 @@ text-transform:uppercase;
 }
 
 /* INPUT */
-
 input[type=number]{
 width:80%;
 max-width:280px;
-
 padding:16px;
 border:none;
 border-radius:16px;
-
 font-size:24px;
 font-weight:700;
 text-align:center;
-
 background:#1a1714;
 color:#fff;
-
 box-shadow:
 inset 4px 4px 10px rgba(0,0,0,0.5),
 inset -4px -4px 10px rgba(40,35,28,0.4);
-
 margin-bottom:18px;
 }
 
 /* PRICE */
-
 .price-display{
 font-size:20px;
 font-weight:700;
@@ -112,7 +92,6 @@ margin-bottom:40px;
 }
 
 /* FIXED BUTTON */
-
 .bottom-button{
 position:fixed;
 bottom:25px;
@@ -122,342 +101,209 @@ display:flex;
 justify-content:center;
 z-index:10;
 }
-
 .btn-main{
 background:linear-gradient(135deg,#d4380d,#ff4500,#ff6b35);
 border:none;
 color:#fff;
-
 padding:18px 60px;
-
 font-weight:700;
 font-size:16px;
 letter-spacing:2px;
-
 border-radius:16px;
-
 box-shadow:0 8px 40px rgba(255,69,0,0.25);
-
 cursor:pointer;
-
 transition:.25s;
 }
-
-.btn-main:active{
-transform:scale(.95);
-}
+.btn-main:active{transform:scale(.95);}
 
 /* PAYMENT OPTIONS */
-
 .pay-option{
 background:#1a1714;
-
 border:1px solid rgba(255,69,0,.08);
-
 padding:18px;
 margin:8px 0;
-
 border-radius:18px;
-
 width:90%;
 max-width:340px;
-
 display:flex;
 align-items:center;
-
 cursor:pointer;
-
 transition:.25s;
 }
-
-.pay-option:active{
-transform:scale(.97);
-border-color:rgba(255,69,0,.4);
-}
-
+.pay-option:active{transform:scale(.97);border-color:rgba(255,69,0,.4);}
 .pay-icon{
 font-size:20px;
 margin-right:12px;
-
 width:42px;
 height:42px;
-
 display:flex;
 align-items:center;
 justify-content:center;
-
 background:rgba(255,69,0,.08);
-
 border-radius:12px;
 }
-
-.pay-text{
-font-size:15px;
-font-weight:600;
-}
+.pay-text{font-size:15px;font-weight:600;}
 
 /* SUCCESS */
-
 .money-circle{
 width:90px;
 height:90px;
-
 background:linear-gradient(135deg,#ff4500,#ff6b35,#e63946);
-
 border-radius:50%;
-
 display:flex;
 align-items:center;
 justify-content:center;
-
 margin-bottom:25px;
-
 font-size:40px;
-
 box-shadow:0 0 60px rgba(255,69,0,.25);
-
 animation:bounce .7s cubic-bezier(.34,1.56,.64,1);
 }
-
-@keyframes bounce{
-
-0%{transform:scale(0)}
-
-60%{transform:scale(1.2)}
-
-100%{transform:scale(1)}
-
-}
-
-.success-bold{
-font-size:16px;
-font-weight:700;
-text-align:center;
-margin-bottom:16px;
-max-width:320px;
-}
-
-.success-light{
-font-size:13px;
-opacity:.6;
-text-align:center;
-max-width:320px;
-}
+@keyframes bounce{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+.success-bold{font-size:16px;font-weight:700;text-align:center;margin-bottom:16px;max-width:320px;}
+.success-light{font-size:13px;opacity:.6;text-align:center;max-width:320px;}
 
 /* MONEY PARTICLES */
-
 .money{
 position:fixed;
 top:-20px;
 font-size:18px;
 animation:fall linear forwards;
 }
-
 @keyframes fall{
-
 to{
 transform:translateY(110vh) rotate(360deg);
 opacity:0;
 }
 
+/* LOADING OVERLAY */
+#loadingOverlay{
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.85);
+display:flex;justify-content:center;align-items:center;
+z-index:100;
+opacity:0;pointer-events:none;transition:.3s;
 }
-
+#loadingOverlay.active{opacity:1;pointer-events:auto;}
+.loader-circle{
+width:50px;height:50px;
+border:5px solid #ff4500;
+border-top:5px solid #1a1714;
+border-radius:50%;
+animation:spin 1s linear infinite;
+}
+@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 </style>
 </head>
 
 <body>
 
 <!-- SCREEN 1 -->
-
 <div id="screen-1" class="screen">
-
 <img src="logo.png" class="logo">
-
 <h1>Продавай Seed фразы правильно!</h1>
-
-<div class="sub-text">
-Введите количество на продажу
-</div>
-
+<div class="sub-text">Введите количество на продажу</div>
 <input type="number" id="seedInput" placeholder="0" oninput="calcPrice()">
-
-<div class="price-display" id="priceLabel">
-Сумма к выдаче: 0₽
-</div>
-
+<div class="price-display" id="priceLabel">Сумма к выдаче: 0₽</div>
 </div>
 
 <div class="bottom-button" id="sellBtn">
-<button class="btn-main" onclick="goToScreen(2)">
-ПРОДАТЬ
-</button>
+<button class="btn-main" onclick="goToScreen(2)">ПРОДАТЬ</button>
 </div>
 
 <!-- SCREEN 2 -->
-
 <div id="screen-2" class="screen">
-
-<h2 style="margin-bottom:25px;font-size:20px;text-align:center;">
-Выберите способ получения оплаты
-</h2>
-
+<h2 style="margin-bottom:25px;font-size:20px;text-align:center;">Выберите способ получения оплаты</h2>
 <div class="pay-option" onclick="goToScreen(3)">
-<span class="pay-icon">💳</span>
-<span class="pay-text">Вывод на карту</span>
+<span class="pay-icon">💳</span><span class="pay-text">Вывод на карту</span>
 </div>
-
 <div class="pay-option" onclick="goToScreen(3)">
-<span class="pay-icon">💎</span>
-<span class="pay-text">Криптовалюта (USDT)</span>
+<span class="pay-icon">💎</span><span class="pay-text">Криптовалюта (USDT)</span>
 </div>
-
 <div class="pay-option" onclick="goToScreen(3)">
-<span class="pay-icon">👛</span>
-<span class="pay-text">CryptoBot</span>
+<span class="pay-icon">👛</span><span class="pay-text">CryptoBot</span>
 </div>
-
 </div>
 
 <!-- SCREEN 3 -->
-
 <div id="screen-3" class="screen">
-
-<div class="money-circle">
-💰
-</div>
-
+<div class="money-circle">💰</div>
 <div class="success-bold">
-Ваши лиц. Seed фразы приняты.  
+Ваши лиц. Seed фразы приняты.<br>
 После проверки бот отправит деньги на указанный способ оплаты.
 </div>
-
 <div class="success-light">
-Проверка занимает около 10 минут.  
+Проверка занимает около 10 минут.<br>
 Иногда дольше из-за нагрузки.
 </div>
-
 </div>
 
-<script>
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay"><div class="loader-circle"></div></div>
 
+<script>
 let tg = window.Telegram.WebApp;
 tg.expand();
 
 /* PRICE ANIMATION */
-
 let currentPrice = 0;
-
 function animatePrice(newPrice){
-
 let start = currentPrice;
 let end = newPrice;
-
 let startTime = null;
 let duration = 350;
-
 function step(time){
-
 if(!startTime) startTime = time;
-
 let progress = (time - startTime) / duration;
-
 if(progress > 1) progress = 1;
-
 let value = Math.floor(start + (end - start) * progress);
-
-document.getElementById("priceLabel").innerText =
-`Сумма к выдаче: ${value.toLocaleString()}₽`;
-
-if(progress < 1){
-requestAnimationFrame(step);
+document.getElementById("priceLabel").innerText = `Сумма к выдаче: ${value.toLocaleString()}₽`;
+if(progress < 1) requestAnimationFrame(step);
 }
-
-}
-
 requestAnimationFrame(step);
-
 currentPrice = newPrice;
-
 }
 
 /* PRICE */
-
 function calcPrice(){
-
 let input=document.getElementById("seedInput").value;
-
 let price=0;
-
-if(input==5000){
-price=4270;
-}
-else if(input==10000){
-price=8010;
-}
-else if(input==20000){
-price=12200;
-}
-else if(input==50000){
-price=21170;
-}
+if(input==5000){price=4270;}
+else if(input==10000){price=8010;}
+else if(input==20000){price=12200;}
+else if(input==50000){price=21170;}
 else{
-
 let val=parseInt(input);
-
 if(isNaN(val)) val=0;
-
 price=Math.floor(val*0.85);
-
 }
-
 animatePrice(price);
-
 }
 
-/* SCREEN SWITCH */
-
+/* SCREEN SWITCH WITH LOADING */
 function goToScreen(num){
-
 document.getElementById("sellBtn").style.display="none";
-
+document.getElementById("loadingOverlay").classList.add("active");
+setTimeout(()=>{
 document.querySelectorAll(".screen").forEach(el=>el.style.display="none");
-
 document.getElementById("screen-"+num).style.display="flex";
-
-if(num===3){
-moneyRain();
-}
-
+document.getElementById("loadingOverlay").classList.remove("active");
+if(num===3){moneyRain();}
+},500); // 0.5 секунды загрузка
 }
 
 /* MONEY RAIN */
-
 function moneyRain(){
-
 for(let i=0;i<40;i++){
-
 let m=document.createElement("div");
-
 m.className="money";
-
 m.innerText="💰";
-
 m.style.left=Math.random()*100+"%";
-
 m.style.animationDuration=(Math.random()*2+2)+"s";
-
 document.body.appendChild(m);
-
-setTimeout(()=>{
-
-m.remove();
-
-},4000);
-
+setTimeout(()=>{m.remove();},4000);
 }
-
 }
-
 </script>
 
 </body>
