@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
 <title>Sell Seed Bot</title>
 
@@ -44,39 +44,21 @@ background:radial-gradient(circle at 50% 120%, #1a0600 0%, #0e0c0b 70%);
 
 .lava{
 position:absolute;
-width:400px;
-height:400px;
+width:420px;
+height:420px;
 border-radius:50%;
 filter:blur(120px);
 opacity:.18;
-animation:lavaMove 18s ease-in-out infinite;
+animation:lavaMove 20s ease-in-out infinite;
 }
 
-.lava1{
-background:#ff4500;
-bottom:-120px;
-left:-120px;
-}
-
-.lava2{
-background:#ff6b35;
-bottom:-100px;
-right:-100px;
-animation-delay:-6s;
-}
-
-.lava3{
-background:#d4380d;
-top:-120px;
-left:40%;
-animation-delay:-12s;
-}
+.lava1{background:#ff4500;bottom:-120px;left:-120px;}
+.lava2{background:#ff6b35;bottom:-100px;right:-100px;animation-delay:-7s;}
+.lava3{background:#d4380d;top:-120px;left:40%;animation-delay:-12s;}
 
 @keyframes lavaMove{
-
-0%,100%{transform:scale(1) translateY(0)}
-50%{transform:scale(1.2) translateY(-40px)}
-
+0%,100%{transform:scale(1)}
+50%{transform:scale(1.25) translateY(-40px)}
 }
 
 /* SPARKS */
@@ -87,24 +69,14 @@ width:3px;
 height:3px;
 background:#ff6b35;
 border-radius:50%;
-opacity:0;
 animation:sparkFloat linear infinite;
+opacity:0;
 }
 
 @keyframes sparkFloat{
-
-0%{
-transform:translateY(100vh);
-opacity:0;
-}
-
+0%{transform:translateY(100vh);opacity:0}
 10%{opacity:1}
-
-100%{
-transform:translateY(-10vh);
-opacity:0;
-}
-
+100%{transform:translateY(-10vh);opacity:0}
 }
 
 /* SCREENS */
@@ -142,16 +114,9 @@ font-weight:800;
 text-align:center;
 margin-bottom:10px;
 
-background:linear-gradient(135deg,#ff6b35,#ff4500,#ff2e00);
+background:linear-gradient(135deg,#ff6b35,#ff4500);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
-}
-
-.sub-text{
-opacity:.5;
-font-size:12px;
-letter-spacing:1px;
-margin-bottom:25px;
 }
 
 /* INPUT */
@@ -159,9 +124,7 @@ margin-bottom:25px;
 input{
 width:80%;
 max-width:280px;
-
 padding:16px;
-
 border:none;
 border-radius:16px;
 
@@ -181,35 +144,17 @@ inset -4px -4px 10px rgba(40,35,28,.4);
 
 .price-display{
 
-font-size:26px;
+font-size:30px;
 font-weight:800;
+
+margin-top:30px;
+margin-bottom:110px;
 
 color:#ff6b35;
 
-margin-top:25px;
-margin-bottom:100px;
-
 text-shadow:
-0 0 10px rgba(255,69,0,.6),
-0 0 25px rgba(255,69,0,.3);
-
-animation:pricePulse 2s ease-in-out infinite;
-
-}
-
-@keyframes pricePulse{
-
-0%,100%{
-text-shadow:
-0 0 10px rgba(255,69,0,.6),
-0 0 25px rgba(255,69,0,.3);
-}
-
-50%{
-text-shadow:
-0 0 20px rgba(255,69,0,.9),
-0 0 45px rgba(255,69,0,.5);
-}
+0 0 15px rgba(255,69,0,.7),
+0 0 40px rgba(255,69,0,.4);
 
 }
 
@@ -224,21 +169,62 @@ display:flex;
 justify-content:center;
 }
 
+/* SHIMMER BUTTON */
+
 .btn-main{
+
+position:relative;
 
 background:linear-gradient(135deg,#ff4500,#ff6b35);
 
 border:none;
-color:#fff;
 
 padding:18px 60px;
 
+color:white;
 font-weight:700;
 font-size:16px;
 
 border-radius:16px;
 
+overflow:hidden;
+
 box-shadow:0 10px 40px rgba(255,69,0,.35);
+
+}
+
+/* SHIMMER EFFECT */
+
+.btn-main::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+left:-120%;
+
+width:80%;
+height:100%;
+
+background:linear-gradient(
+120deg,
+transparent,
+rgba(255,255,255,.35),
+transparent
+);
+
+animation:shimmer 3.5s infinite;
+
+}
+
+@keyframes shimmer{
+
+0%{left:-120%}
+
+60%{left:120%}
+
+100%{left:120%}
 
 }
 
@@ -310,14 +296,10 @@ box-shadow:0 0 60px rgba(255,69,0,.4);
 
 <h1>Продавай Seed фразы правильно!</h1>
 
-<div class="sub-text">
-Введите количество на продажу
-</div>
-
 <input type="number" id="seedInput" placeholder="0" oninput="calcPrice()">
 
 <div class="price-display" id="priceLabel">
-Сумма к выдаче: 0₽
+0₽
 </div>
 
 </div>
@@ -354,7 +336,7 @@ CryptoBot
 <div class="money-circle">💰</div>
 
 <div style="text-align:center;max-width:320px;">
-Ваши лиц. Seed фразы приняты.<br>
+Ваши Seed фразы приняты.<br>
 После проверки бот отправит деньги.
 </div>
 
@@ -365,29 +347,29 @@ CryptoBot
 let tg=window.Telegram.WebApp;
 tg.expand();
 
-let currentPrice=0;
+/* PRICE FLIP EFFECT */
 
-/* PRICE ANIMATION */
+let currentPrice=0;
 
 function animatePrice(newPrice){
 
 let start=currentPrice;
 let end=newPrice;
 
+let duration=400;
 let startTime=null;
 
 function step(t){
 
 if(!startTime) startTime=t;
 
-let progress=(t-startTime)/300;
-
+let progress=(t-startTime)/duration;
 if(progress>1) progress=1;
 
 let value=Math.floor(start+(end-start)*progress);
 
 document.getElementById("priceLabel").innerText=
-"Сумма к выдаче: "+value.toLocaleString()+"₽";
+value.toLocaleString()+"₽";
 
 if(progress<1){
 requestAnimationFrame(step);
@@ -424,7 +406,7 @@ animatePrice(price);
 
 }
 
-/* SCREEN */
+/* SCREEN SWITCH */
 
 function goToScreen(n){
 
@@ -440,16 +422,14 @@ document.getElementById("screen-"+n).style.display="flex";
 
 const sparks=document.getElementById("sparks");
 
-for(let i=0;i<25;i++){
+for(let i=0;i<30;i++){
 
 let s=document.createElement("div");
 
 s.className="spark";
 
 s.style.left=Math.random()*100+"%";
-
-s.style.animationDuration=(Math.random()*6+5)+"s";
-
+s.style.animationDuration=(Math.random()*6+6)+"s";
 s.style.animationDelay=Math.random()*10+"s";
 
 sparks.appendChild(s);
@@ -460,3 +440,4 @@ sparks.appendChild(s);
 
 </body>
 </html>
+
