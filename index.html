@@ -8,7 +8,7 @@
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 
@@ -22,24 +22,101 @@ body{
 font-family:'Sora',sans-serif;
 background:#0e0c0b;
 color:#f5ebe0;
-min-height:100vh;
+height:100vh;
+overflow:hidden;
 display:flex;
 justify-content:center;
 align-items:center;
+}
+
+/* LAVA BACKGROUND */
+
+.lava-bg{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-1;
 overflow:hidden;
+background:radial-gradient(circle at 50% 120%, #1a0600 0%, #0e0c0b 70%);
+}
+
+.lava{
+position:absolute;
+width:400px;
+height:400px;
+border-radius:50%;
+filter:blur(120px);
+opacity:.18;
+animation:lavaMove 18s ease-in-out infinite;
+}
+
+.lava1{
+background:#ff4500;
+bottom:-120px;
+left:-120px;
+}
+
+.lava2{
+background:#ff6b35;
+bottom:-100px;
+right:-100px;
+animation-delay:-6s;
+}
+
+.lava3{
+background:#d4380d;
+top:-120px;
+left:40%;
+animation-delay:-12s;
+}
+
+@keyframes lavaMove{
+
+0%,100%{transform:scale(1) translateY(0)}
+50%{transform:scale(1.2) translateY(-40px)}
+
+}
+
+/* SPARKS */
+
+.spark{
+position:absolute;
+width:3px;
+height:3px;
+background:#ff6b35;
+border-radius:50%;
+opacity:0;
+animation:sparkFloat linear infinite;
+}
+
+@keyframes sparkFloat{
+
+0%{
+transform:translateY(100vh);
+opacity:0;
+}
+
+10%{opacity:1}
+
+100%{
+transform:translateY(-10vh);
+opacity:0;
+}
+
 }
 
 /* SCREENS */
 
 .screen{
 display:none;
-width:100%;
-height:100%;
 flex-direction:column;
 align-items:center;
-justify-content:flex-start;
 padding:25px;
 padding-bottom:140px;
+width:100%;
+height:100%;
 overflow-y:auto;
 }
 
@@ -50,11 +127,11 @@ display:flex;
 /* LOGO */
 
 .logo{
-width:105px;
-border-radius:22px;
+width:100px;
 margin-top:20px;
 margin-bottom:20px;
-box-shadow:0 0 50px rgba(255,69,0,0.15);
+border-radius:20px;
+box-shadow:0 0 60px rgba(255,69,0,.15);
 }
 
 /* TITLE */
@@ -62,26 +139,24 @@ box-shadow:0 0 50px rgba(255,69,0,0.15);
 h1{
 font-size:22px;
 font-weight:800;
-margin-bottom:6px;
 text-align:center;
+margin-bottom:10px;
 
-background:linear-gradient(135deg,#ff6b35,#ff4500,#d4380d);
+background:linear-gradient(135deg,#ff6b35,#ff4500,#ff2e00);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
 
 .sub-text{
-font-size:12px;
 opacity:.5;
+font-size:12px;
 letter-spacing:1px;
 margin-bottom:25px;
-text-transform:uppercase;
 }
 
 /* INPUT */
 
-input[type=number]{
-
+input{
 width:80%;
 max-width:280px;
 
@@ -90,55 +165,68 @@ padding:16px;
 border:none;
 border-radius:16px;
 
+background:#1a1714;
+color:#fff;
+
 font-size:24px;
 font-weight:700;
 text-align:center;
 
-background:#1a1714;
-color:#fff;
-
 box-shadow:
-inset 4px 4px 10px rgba(0,0,0,0.5),
-inset -4px -4px 10px rgba(40,35,28,0.4);
-
-margin-bottom:25px;
-
+inset 4px 4px 10px rgba(0,0,0,.5),
+inset -4px -4px 10px rgba(40,35,28,.4);
 }
 
 /* PRICE */
 
 .price-display{
 
-font-size:22px;
+font-size:26px;
 font-weight:800;
 
 color:#ff6b35;
 
+margin-top:25px;
 margin-bottom:100px;
 
-transition:.2s;
+text-shadow:
+0 0 10px rgba(255,69,0,.6),
+0 0 25px rgba(255,69,0,.3);
+
+animation:pricePulse 2s ease-in-out infinite;
+
+}
+
+@keyframes pricePulse{
+
+0%,100%{
+text-shadow:
+0 0 10px rgba(255,69,0,.6),
+0 0 25px rgba(255,69,0,.3);
+}
+
+50%{
+text-shadow:
+0 0 20px rgba(255,69,0,.9),
+0 0 45px rgba(255,69,0,.5);
+}
 
 }
 
 /* BUTTON */
 
 .bottom-button{
-
 position:fixed;
 bottom:25px;
 left:0;
 right:0;
-
 display:flex;
 justify-content:center;
-
-z-index:20;
-
 }
 
 .btn-main{
 
-background:linear-gradient(135deg,#d4380d,#ff4500,#ff6b35);
+background:linear-gradient(135deg,#ff4500,#ff6b35);
 
 border:none;
 color:#fff;
@@ -147,20 +235,11 @@ padding:18px 60px;
 
 font-weight:700;
 font-size:16px;
-letter-spacing:2px;
 
 border-radius:16px;
 
-box-shadow:0 8px 40px rgba(255,69,0,0.25);
+box-shadow:0 10px 40px rgba(255,69,0,.35);
 
-cursor:pointer;
-
-transition:.25s;
-
-}
-
-.btn-main:active{
-transform:scale(.95);
 }
 
 /* PAYMENT */
@@ -182,43 +261,11 @@ max-width:340px;
 display:flex;
 align-items:center;
 
-cursor:pointer;
-
-transition:.25s;
-
-}
-
-.pay-option:active{
-
-transform:scale(.97);
-
-border-color:rgba(255,69,0,.4);
-
 }
 
 .pay-icon{
-
-font-size:20px;
 margin-right:12px;
-
-width:42px;
-height:42px;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-background:rgba(255,69,0,.08);
-
-border-radius:12px;
-
-}
-
-.pay-text{
-
-font-size:15px;
-font-weight:600;
-
+font-size:20px;
 }
 
 /* SUCCESS */
@@ -228,7 +275,7 @@ font-weight:600;
 width:90px;
 height:90px;
 
-background:linear-gradient(135deg,#ff4500,#ff6b35,#e63946);
+background:linear-gradient(135deg,#ff4500,#ff6b35);
 
 border-radius:50%;
 
@@ -236,46 +283,11 @@ display:flex;
 align-items:center;
 justify-content:center;
 
-margin-bottom:25px;
-
 font-size:40px;
 
-box-shadow:0 0 60px rgba(255,69,0,.25);
+margin-bottom:25px;
 
-animation:bounce .7s cubic-bezier(.34,1.56,.64,1);
-
-}
-
-@keyframes bounce{
-
-0%{transform:scale(0)}
-60%{transform:scale(1.2)}
-100%{transform:scale(1)}
-
-}
-
-.success-bold{
-
-font-size:16px;
-font-weight:700;
-
-text-align:center;
-
-margin-bottom:16px;
-
-max-width:320px;
-
-}
-
-.success-light{
-
-font-size:13px;
-
-opacity:.6;
-
-text-align:center;
-
-max-width:320px;
+box-shadow:0 0 60px rgba(255,69,0,.4);
 
 }
 
@@ -284,7 +296,13 @@ max-width:320px;
 
 <body>
 
-<!-- SCREEN 1 -->
+<div class="lava-bg">
+<div class="lava lava1"></div>
+<div class="lava lava2"></div>
+<div class="lava lava3"></div>
+</div>
+
+<div id="sparks"></div>
 
 <div id="screen-1" class="screen">
 
@@ -305,84 +323,73 @@ max-width:320px;
 </div>
 
 <div class="bottom-button" id="sellBtn">
-<button class="btn-main" onclick="goToScreen(2)">
-ПРОДАТЬ
-</button>
+<button class="btn-main" onclick="goToScreen(2)">ПРОДАТЬ</button>
 </div>
-
-<!-- SCREEN 2 -->
 
 <div id="screen-2" class="screen">
 
-<h2 style="margin-bottom:25px;font-size:20px;text-align:center;">
+<h2 style="margin-bottom:25px;text-align:center;">
 Выберите способ получения оплаты
 </h2>
 
 <div class="pay-option" onclick="goToScreen(3)">
 <span class="pay-icon">💳</span>
-<span class="pay-text">Вывод на карту</span>
+Вывод на карту
 </div>
 
 <div class="pay-option" onclick="goToScreen(3)">
 <span class="pay-icon">💎</span>
-<span class="pay-text">Криптовалюта (USDT)</span>
+Криптовалюта USDT
 </div>
 
 <div class="pay-option" onclick="goToScreen(3)">
 <span class="pay-icon">👛</span>
-<span class="pay-text">CryptoBot</span>
+CryptoBot
 </div>
 
 </div>
-
-<!-- SCREEN 3 -->
 
 <div id="screen-3" class="screen">
 
 <div class="money-circle">💰</div>
 
-<div class="success-bold">
-Ваши лиц. Seed фразы приняты.  
-После проверки бот отправит деньги на указанный способ оплаты.
-</div>
-
-<div class="success-light">
-Проверка занимает около 10 минут.  
-Иногда дольше из-за нагрузки.
+<div style="text-align:center;max-width:320px;">
+Ваши лиц. Seed фразы приняты.<br>
+После проверки бот отправит деньги.
 </div>
 
 </div>
 
 <script>
 
-let tg = window.Telegram.WebApp;
+let tg=window.Telegram.WebApp;
 tg.expand();
 
-let currentPrice = 0;
+let currentPrice=0;
 
-/* PRICE WITH ANIMATION */
+/* PRICE ANIMATION */
 
 function animatePrice(newPrice){
 
-let start = currentPrice;
-let end = newPrice;
+let start=currentPrice;
+let end=newPrice;
 
-let duration = 300;
-let startTime = null;
+let startTime=null;
 
-function step(timestamp){
+function step(t){
 
-if(!startTime) startTime = timestamp;
+if(!startTime) startTime=t;
 
-let progress = timestamp - startTime;
-let percent = Math.min(progress / duration, 1);
+let progress=(t-startTime)/300;
 
-let value = Math.floor(start + (end-start) * percent);
+if(progress>1) progress=1;
 
-document.getElementById("priceLabel").innerText =
-"Сумма к выдаче: " + value.toLocaleString() + "₽";
+let value=Math.floor(start+(end-start)*progress);
 
-if(percent < 1){
+document.getElementById("priceLabel").innerText=
+"Сумма к выдаче: "+value.toLocaleString()+"₽";
+
+if(progress<1){
 requestAnimationFrame(step);
 }
 
@@ -390,7 +397,7 @@ requestAnimationFrame(step);
 
 requestAnimationFrame(step);
 
-currentPrice = newPrice;
+currentPrice=newPrice;
 
 }
 
@@ -417,38 +424,39 @@ animatePrice(price);
 
 }
 
-/* SCREEN SWITCH */
+/* SCREEN */
 
-function goToScreen(num){
-
-document.getElementById("seedInput").blur();
-
-/* hide button permanently */
+function goToScreen(n){
 
 document.getElementById("sellBtn").style.display="none";
 
-/* switch screen */
-
 document.querySelectorAll(".screen").forEach(el=>el.style.display="none");
 
-document.getElementById("screen-"+num).style.display="flex";
+document.getElementById("screen-"+n).style.display="flex";
 
 }
 
-/* close keyboard */
+/* SPARKS */
 
-document.addEventListener("touchstart",(e)=>{
+const sparks=document.getElementById("sparks");
 
-let input=document.getElementById("seedInput");
+for(let i=0;i<25;i++){
 
-if(!input.contains(e.target)){
-input.blur();
+let s=document.createElement("div");
+
+s.className="spark";
+
+s.style.left=Math.random()*100+"%";
+
+s.style.animationDuration=(Math.random()*6+5)+"s";
+
+s.style.animationDelay=Math.random()*10+"s";
+
+sparks.appendChild(s);
+
 }
-
-});
 
 </script>
 
 </body>
 </html>
-
