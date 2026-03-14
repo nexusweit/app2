@@ -5,22 +5,162 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sell Seed Bot</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* --- СВЕТЛАЯ ТЕМА --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f4f5; /* Светло-серый фон */
-            color: #1f1f1f; /* Темно-серый текст */
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #040d12;
+            color: #e0f2f1;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            width: 100vw;
             text-align: center;
             overflow: hidden;
         }
 
+        /* === AURORA BACKGROUND === */
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .aurora-wave {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            border-radius: 40%;
+            opacity: 0.12;
+            filter: blur(80px);
+            animation: auroraFloat 12s ease-in-out infinite;
+        }
+
+        .aurora-wave:nth-child(1) {
+            background: radial-gradient(ellipse, #00d4aa, transparent 70%);
+            top: -80%;
+            left: -50%;
+            animation-duration: 14s;
+        }
+
+        .aurora-wave:nth-child(2) {
+            background: radial-gradient(ellipse, #00b4d8, transparent 70%);
+            top: -60%;
+            right: -60%;
+            animation-duration: 18s;
+            animation-delay: -4s;
+        }
+
+        .aurora-wave:nth-child(3) {
+            background: radial-gradient(ellipse, #0ff0b3, transparent 70%);
+            bottom: -70%;
+            left: -30%;
+            animation-duration: 16s;
+            animation-delay: -8s;
+        }
+
+        @keyframes auroraFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(30px, -20px) rotate(5deg) scale(1.05); }
+            50% { transform: translate(-20px, 15px) rotate(-3deg) scale(0.95); }
+            75% { transform: translate(15px, 25px) rotate(4deg) scale(1.02); }
+        }
+
+        /* Grid overlay */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background-image:
+                linear-gradient(rgba(0, 212, 170, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 170, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        /* Floating particles */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleRise 8s linear infinite;
+        }
+
+        @keyframes particleRise {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.2; }
+            100% {
+                opacity: 0;
+                transform: translateY(-20vh) scale(1);
+            }
+        }
+
+        /* Hexagon decorations */
+        .hex-deco {
+            position: fixed;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.04;
+            animation: hexSpin 30s linear infinite;
+        }
+
+        .hex-deco svg {
+            stroke: #00d4aa;
+            fill: none;
+            stroke-width: 1;
+        }
+
+        .hex-deco:nth-child(1) {
+            top: 10%;
+            right: -20px;
+            animation-duration: 35s;
+        }
+
+        .hex-deco:nth-child(2) {
+            bottom: 15%;
+            left: -30px;
+            animation-duration: 40s;
+            animation-direction: reverse;
+            opacity: 0.03;
+        }
+
+        @keyframes hexSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* === SCREENS === */
         .screen {
             display: none;
             width: 100%;
@@ -30,184 +170,446 @@
             justify-content: center;
             padding: 20px;
             box-sizing: border-box;
-            animation: fadeIn 0.4s ease-out;
+            position: relative;
+            z-index: 10;
         }
-        
+
         #screen-1 { display: flex; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        /* Screen transition */
+        .screen-enter {
+            animation: screenSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes screenSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.96);
+                filter: blur(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        /* Stagger children */
+        .screen-enter > * {
+            opacity: 0;
+            animation: staggerIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .screen-enter > *:nth-child(1) { animation-delay: 0.08s; }
+        .screen-enter > *:nth-child(2) { animation-delay: 0.16s; }
+        .screen-enter > *:nth-child(3) { animation-delay: 0.24s; }
+        .screen-enter > *:nth-child(4) { animation-delay: 0.32s; }
+        .screen-enter > *:nth-child(5) { animation-delay: 0.40s; }
+        .screen-enter > *:nth-child(6) { animation-delay: 0.48s; }
+
+        @keyframes staggerIn {
+            from { opacity: 0; transform: translateY(25px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- ЭЛЕМЕНТЫ ПЕРВОГО ЭКРАНА --- */
+        /* === SCREEN 1 ELEMENTS === */
         .logo {
-            width: 120px;
+            width: 110px;
             height: auto;
-            margin-bottom: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            border-radius: 22px;
+            box-shadow:
+                0 0 40px rgba(0, 212, 170, 0.2),
+                0 8px 32px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 212, 170, 0.15);
+            animation: logoPulse 4s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(0, 212, 170, 0.15), 0 8px 32px rgba(0, 0, 0, 0.5); }
+            50% { box-shadow: 0 0 55px rgba(0, 212, 170, 0.3), 0 8px 32px rgba(0, 0, 0, 0.5); }
         }
 
         h1 {
-            font-size: 22px;
+            font-size: 23px;
             font-weight: 700;
             margin-bottom: 10px;
-            color: #000;
+            background: linear-gradient(135deg, #00d4aa 0%, #00b4d8 50%, #0ff0b3 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 5s ease infinite;
+            line-height: 1.3;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 100% center; }
         }
 
         .sub-text {
             font-size: 14px;
-            color: #666;
-            margin-bottom: 15px;
+            color: rgba(224, 242, 241, 0.5);
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
         }
 
-        /* Поле ввода цифр */
+        /* Input */
         input[type="number"] {
             width: 80%;
-            padding: 15px;
-            font-size: 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
+            max-width: 300px;
+            padding: 16px;
+            font-size: 22px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            border: 2px solid rgba(0, 212, 170, 0.15);
+            border-radius: 16px;
             text-align: center;
             outline: none;
-            background: white;
-            transition: border-color 0.2s;
+            background: rgba(0, 212, 170, 0.04);
+            color: #e0f2f1;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             margin-bottom: 20px;
-        }
-        input[type="number"]:focus {
-            border-color: #007bff;
+            -moz-appearance: textfield;
         }
 
-        /* Отображение цены */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"]::placeholder {
+            color: rgba(0, 212, 170, 0.25);
+        }
+
+        input[type="number"]:focus {
+            border-color: #00d4aa;
+            box-shadow:
+                0 0 30px rgba(0, 212, 170, 0.12),
+                inset 0 0 20px rgba(0, 212, 170, 0.04);
+            background: rgba(0, 212, 170, 0.07);
+        }
+
+        /* Price display */
         .price-display {
             font-size: 20px;
             font-weight: 600;
-            color: #007bff; /* Синий цвет суммы */
+            color: #00d4aa;
             margin-bottom: 30px;
             min-height: 24px;
+            text-shadow: 0 0 20px rgba(0, 212, 170, 0.25);
+            transition: all 0.3s ease;
         }
 
-        /* Главная кнопка */
+        /* Main button */
         .btn-main {
-            background-color: #007bff;
-            color: white;
+            position: relative;
+            background: linear-gradient(135deg, #00d4aa, #00b4d8);
+            color: #040d12;
             border: none;
             padding: 18px 60px;
             font-size: 18px;
-            font-weight: bold;
-            border-radius: 12px;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+            border-radius: 16px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
             width: 80%;
+            max-width: 300px;
+            box-shadow: 0 8px 30px rgba(0, 212, 170, 0.25);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            letter-spacing: 1.5px;
         }
-        .btn-main:active { transform: scale(0.96); }
 
-        /* --- ЭЛЕМЕНТЫ ВТОРОГО ЭКРАНА (ОПЛАТА) --- */
+        .btn-main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            animation: btnShimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes btnShimmer {
+            0%, 100% { left: -100%; }
+            50% { left: 100%; }
+        }
+
+        .btn-main:active {
+            transform: scale(0.96);
+            box-shadow: 0 4px 15px rgba(0, 212, 170, 0.15);
+        }
+
+        /* Ripple effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            animation: rippleAnim 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes rippleAnim {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* === SCREEN 2 === */
+        h2 {
+            color: #e0f2f1;
+            font-weight: 600;
+            text-shadow: none;
+        }
+
         .pay-option {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 15px 20px;
+            background: rgba(0, 212, 170, 0.04);
+            border: 1px solid rgba(0, 212, 170, 0.1);
+            padding: 18px 20px;
             margin: 8px 0;
-            border-radius: 12px;
+            border-radius: 16px;
             width: 90%;
+            max-width: 380px;
             display: flex;
             align-items: center;
             cursor: pointer;
             text-align: left;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: 0.1s;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
         }
-        .pay-option:active { background: #f0f0f0; transform: scale(0.98); }
-        
+
+        .pay-option::after {
+            content: '›';
+            position: absolute;
+            right: 20px;
+            font-size: 22px;
+            color: rgba(0, 212, 170, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .pay-option:active {
+            transform: scale(0.97);
+            background: rgba(0, 212, 170, 0.1);
+            border-color: rgba(0, 212, 170, 0.4);
+            box-shadow: 0 0 25px rgba(0, 212, 170, 0.1);
+        }
+
+        .pay-option:active::after {
+            right: 15px;
+            color: #00d4aa;
+        }
+
         .pay-icon {
-            font-size: 24px;
+            font-size: 22px;
             margin-right: 15px;
-            width: 30px;
-            text-align: center;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 212, 170, 0.08);
+            border-radius: 12px;
+            flex-shrink: 0;
         }
+
         .pay-text {
             font-size: 16px;
             font-weight: 500;
+            color: #e0f2f1;
         }
 
-        /* --- ЭЛЕМЕНТЫ ТРЕТЬЕГО ЭКРАНА (УСПЕХ) --- */
+        /* === SCREEN 3 (SUCCESS) === */
         .checkmark-circle {
-            width: 80px;
-            height: 80px;
-            background-color: #4CAF50;
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #00d4aa, #0ff0b3);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 25px;
-            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+            box-shadow: 0 0 50px rgba(0, 212, 170, 0.25);
+            position: relative;
+            animation: successPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
+        @keyframes successPop {
+            0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+            60% { transform: scale(1.15) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
         .checkmark-circle::after {
             content: '✔';
-            font-size: 40px;
-            color: white;
+            font-size: 42px;
+            color: #040d12;
+            animation: checkFadeIn 0.4s ease 0.3s both;
+        }
+
+        @keyframes checkFadeIn {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .checkmark-circle::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid #00d4aa;
+            animation: pingRing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes pingRing {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(2.2); opacity: 0; }
         }
 
         .success-bold {
-            font-size: 18px;
-            font-weight: 800;
-            color: #000;
+            font-size: 17px;
+            font-weight: 700;
+            color: #e0f2f1;
             margin-bottom: 15px;
-            line-height: 1.4;
-        }
-        
-        .success-light {
-            font-size: 14px;
-            color: #555;
-            font-weight: 400;
             line-height: 1.5;
             max-width: 320px;
         }
 
+        .success-light {
+            font-size: 14px;
+            color: rgba(224, 242, 241, 0.45);
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 320px;
+        }
+
+        /* Confetti canvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        /* Status bar style indicator */
+        .status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            z-index: 100;
+            background: rgba(0, 212, 170, 0.1);
+            overflow: hidden;
+        }
+
+        .status-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 40%;
+            background: linear-gradient(90deg, transparent, #00d4aa, transparent);
+            animation: statusSlide 3s ease-in-out infinite;
+        }
+
+        @keyframes statusSlide {
+            0% { left: -40%; }
+            100% { left: 100%; }
+        }
+
+        /* Glow line at bottom */
+        .bottom-glow {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 170, 0.3), transparent);
+            z-index: 2;
+            box-shadow: 0 0 20px rgba(0, 212, 170, 0.1);
+        }
     </style>
 </head>
 <body>
+    <!-- Background effects -->
+    <div class="aurora-bg">
+        <div class="aurora-wave"></div>
+        <div class="aurora-wave"></div>
+        <div class="aurora-wave"></div>
+    </div>
+    <div class="grid-overlay"></div>
+    <div class="particles-container" id="particles"></div>
+    <div class="status-bar"></div>
+    <div class="bottom-glow"></div>
+    <canvas id="confetti-canvas"></canvas>
 
-    <div id="screen-1" class="screen">
+    <!-- Hex decorations -->
+    <div class="hex-deco" style="top: 8%; right: -25px;">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+            <polygon points="60,5 110,30 110,90 60,115 10,90 10,30"/>
+        </svg>
+    </div>
+    <div class="hex-deco" style="bottom: 12%; left: -25px;">
+        <svg width="90" height="90" viewBox="0 0 120 120">
+            <polygon points="60,5 110,30 110,90 60,115 10,90 10,30"/>
+        </svg>
+    </div>
+
+    <!-- Screen 1 -->
+    <div id="screen-1" class="screen screen-enter">
         <img src="logo.png" alt="Logo" class="logo">
         <h1>Продавай Seed фразы правильно!</h1>
-        
         <div class="sub-text">Введите количество на продажу</div>
-        
         <input type="number" id="seedInput" placeholder="0" oninput="calcPrice()">
-        
         <div class="price-display" id="priceLabel">Сумма к выдаче: 0₽</div>
-        
         <button class="btn-main" onclick="goToScreen(2)">ПРОДАТЬ</button>
     </div>
 
+    <!-- Screen 2 -->
     <div id="screen-2" class="screen">
         <h2 style="margin-bottom: 25px; font-size: 20px; line-height: 1.4;">Выберите желаемый способ получения оплаты за ваши лицензированные Seed фразы.</h2>
-        
+
         <div class="pay-option" onclick="goToScreen(3)">
             <span class="pay-icon">💳</span>
             <span class="pay-text">Вывод на карту</span>
         </div>
-        
+
         <div class="pay-option" onclick="goToScreen(3)">
             <span class="pay-icon">💎</span>
             <span class="pay-text">Криптовалюта (USDT)</span>
         </div>
-        
+
         <div class="pay-option" onclick="goToScreen(3)">
             <span class="pay-icon">👛</span>
             <span class="pay-text">CryptoBot</span>
         </div>
     </div>
 
+    <!-- Screen 3 -->
     <div id="screen-3" class="screen">
         <div class="checkmark-circle"></div>
-        
         <div class="success-bold">
             Ваши лиц. Seed фразы приняты и после проверки бота вы получите деньги на свой счет, который указали к оплате.
         </div>
-        
         <div class="success-light">
             Проверка выполняется в течении 10 минут, иногда это время увеличивается в зависимости от загрузки.
         </div>
@@ -216,6 +618,100 @@
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
+
+        // === PARTICLES SYSTEM ===
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            const colors = ['#00d4aa', '#00b4d8', '#0ff0b3', '#14b8a6'];
+            for (let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                const size = (Math.random() * 3 + 1) + 'px';
+                p.style.width = size;
+                p.style.height = size;
+                p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                p.style.animationDuration = (Math.random() * 6 + 5) + 's';
+                p.style.animationDelay = (Math.random() * 10) + 's';
+                container.appendChild(p);
+            }
+        })();
+
+        // === RIPPLE EFFECT ON BUTTONS ===
+        document.querySelectorAll('.btn-main, .pay-option').forEach(el => {
+            el.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+                ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // === CONFETTI ===
+        function launchConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const pieces = [];
+            const colors = ['#00d4aa', '#00b4d8', '#0ff0b3', '#14b8a6', '#06b6d4', '#34d399'];
+
+            for (let i = 0; i < 80; i++) {
+                pieces.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 14,
+                    vy: (Math.random() - 0.5) * 14 - 5,
+                    w: Math.random() * 8 + 3,
+                    h: Math.random() * 5 + 2,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 12,
+                    gravity: 0.12,
+                    opacity: 1
+                });
+            }
+
+            let frame = 0;
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let alive = false;
+
+                pieces.forEach(p => {
+                    if (p.opacity <= 0) return;
+                    alive = true;
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += p.gravity;
+                    p.rotation += p.rotSpeed;
+                    p.vx *= 0.99;
+                    if (frame > 50) p.opacity -= 0.012;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation * Math.PI / 180);
+                    ctx.globalAlpha = Math.max(0, p.opacity);
+                    ctx.fillStyle = p.color;
+                    ctx.shadowColor = p.color;
+                    ctx.shadowBlur = 6;
+                    ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                    ctx.restore();
+                });
+
+                frame++;
+                if (alive && frame < 220) requestAnimationFrame(animate);
+                else ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            animate();
+        }
+
+        // === ORIGINAL FUNCTIONS (UNTOUCHED) ===
 
         // Логика подсчета цены
         function calcPrice() {
@@ -238,7 +734,7 @@
                 let val = parseInt(input);
                 if (isNaN(val)) val = 0;
                 // Красиво форматируем число (пробелы между тысячами)
-                price = Math.floor(val * 0.85).toLocaleString(); 
+                price = Math.floor(val * 0.85).toLocaleString();
             }
 
             label.innerText = `Сумма к выдаче: ${price}₽`;
@@ -247,8 +743,23 @@
         // Переключение экранов
         function goToScreen(num) {
             document.querySelectorAll('.screen').forEach(el => el.style.display = 'none');
-            document.getElementById('screen-' + num).style.display = 'flex';
+            let target = document.getElementById('screen-' + num);
+            target.style.display = 'flex';
+
+            // Re-trigger entrance animation
+            target.classList.remove('screen-enter');
+            void target.offsetWidth;
+            target.classList.add('screen-enter');
+
+            // Confetti on success screen
+            if (num === 3) {
+                setTimeout(launchConfetti, 350);
+            }
         }
+    </script>
+</body>
+</html>
+
     </script>
 </body>
 </html>
