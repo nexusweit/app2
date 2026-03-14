@@ -41,7 +41,6 @@ justify-content:flex-start;
 padding:25px;
 padding-bottom:140px;
 overflow-y:auto;
-position:relative;
 }
 
 #screen-1{
@@ -57,6 +56,8 @@ margin-top:20px;
 margin-bottom:20px;
 box-shadow:0 0 50px rgba(255,69,0,0.15);
 }
+
+/* TITLE */
 
 h1{
 font-size:22px;
@@ -80,10 +81,12 @@ text-transform:uppercase;
 /* INPUT */
 
 input[type=number]{
+
 width:80%;
 max-width:280px;
 
 padding:16px;
+
 border:none;
 border-radius:16px;
 
@@ -98,39 +101,45 @@ box-shadow:
 inset 4px 4px 10px rgba(0,0,0,0.5),
 inset -4px -4px 10px rgba(40,35,28,0.4);
 
-margin-bottom:20px;
+margin-bottom:25px;
+
 }
 
 /* PRICE */
 
 .price-display{
-font-size:20px;
-font-weight:700;
+
+font-size:22px;
+font-weight:800;
+
 color:#ff6b35;
-margin-bottom:90px;
+
+margin-bottom:100px;
+
+transition:.2s;
+
 }
 
 /* BUTTON */
 
 .bottom-button{
+
 position:fixed;
 bottom:25px;
 left:0;
 right:0;
+
 display:flex;
 justify-content:center;
-z-index:20;
-transition:.25s;
-}
 
-.bottom-button.hidden{
-opacity:0;
-pointer-events:none;
-transform:translateY(30px);
+z-index:20;
+
 }
 
 .btn-main{
+
 background:linear-gradient(135deg,#d4380d,#ff4500,#ff6b35);
+
 border:none;
 color:#fff;
 
@@ -147,15 +156,17 @@ box-shadow:0 8px 40px rgba(255,69,0,0.25);
 cursor:pointer;
 
 transition:.25s;
+
 }
 
 .btn-main:active{
 transform:scale(.95);
 }
 
-/* PAYMENT OPTIONS */
+/* PAYMENT */
 
 .pay-option{
+
 background:#1a1714;
 
 border:1px solid rgba(255,69,0,.08);
@@ -174,14 +185,19 @@ align-items:center;
 cursor:pointer;
 
 transition:.25s;
+
 }
 
 .pay-option:active{
+
 transform:scale(.97);
+
 border-color:rgba(255,69,0,.4);
+
 }
 
 .pay-icon{
+
 font-size:20px;
 margin-right:12px;
 
@@ -195,16 +211,20 @@ justify-content:center;
 background:rgba(255,69,0,.08);
 
 border-radius:12px;
+
 }
 
 .pay-text{
+
 font-size:15px;
 font-weight:600;
+
 }
 
 /* SUCCESS */
 
 .money-circle{
+
 width:90px;
 height:90px;
 
@@ -223,31 +243,40 @@ font-size:40px;
 box-shadow:0 0 60px rgba(255,69,0,.25);
 
 animation:bounce .7s cubic-bezier(.34,1.56,.64,1);
+
 }
 
 @keyframes bounce{
 
 0%{transform:scale(0)}
-
 60%{transform:scale(1.2)}
-
 100%{transform:scale(1)}
 
 }
 
 .success-bold{
+
 font-size:16px;
 font-weight:700;
+
 text-align:center;
+
 margin-bottom:16px;
+
 max-width:320px;
+
 }
 
 .success-light{
+
 font-size:13px;
+
 opacity:.6;
+
 text-align:center;
+
 max-width:320px;
+
 }
 
 </style>
@@ -310,9 +339,7 @@ max-width:320px;
 
 <div id="screen-3" class="screen">
 
-<div class="money-circle">
-💰
-</div>
+<div class="money-circle">💰</div>
 
 <div class="success-bold">
 Ваши лиц. Seed фразы приняты.  
@@ -331,36 +358,62 @@ max-width:320px;
 let tg = window.Telegram.WebApp;
 tg.expand();
 
-/* PRICE */
+let currentPrice = 0;
+
+/* PRICE WITH ANIMATION */
+
+function animatePrice(newPrice){
+
+let start = currentPrice;
+let end = newPrice;
+
+let duration = 300;
+let startTime = null;
+
+function step(timestamp){
+
+if(!startTime) startTime = timestamp;
+
+let progress = timestamp - startTime;
+let percent = Math.min(progress / duration, 1);
+
+let value = Math.floor(start + (end-start) * percent);
+
+document.getElementById("priceLabel").innerText =
+"Сумма к выдаче: " + value.toLocaleString() + "₽";
+
+if(percent < 1){
+requestAnimationFrame(step);
+}
+
+}
+
+requestAnimationFrame(step);
+
+currentPrice = newPrice;
+
+}
 
 function calcPrice(){
 
 let input=document.getElementById("seedInput").value;
-let label=document.getElementById("priceLabel");
+
 let price=0;
 
-if(input==5000){
-price="4 270";
-}
-else if(input==10000){
-price="8 010";
-}
-else if(input==20000){
-price="12 200";
-}
-else if(input==50000){
-price="21 170";
-}
+if(input==5000) price=4270;
+else if(input==10000) price=8010;
+else if(input==20000) price=12200;
+else if(input==50000) price=21170;
 else{
 
 let val=parseInt(input);
 if(isNaN(val)) val=0;
 
-price=Math.floor(val*0.85).toLocaleString();
+price=Math.floor(val*0.85);
 
 }
 
-label.innerText=`Сумма к выдаче: ${price}₽`;
+animatePrice(price);
 
 }
 
@@ -368,38 +421,34 @@ label.innerText=`Сумма к выдаче: ${price}₽`;
 
 function goToScreen(num){
 
+document.getElementById("seedInput").blur();
+
+/* hide button permanently */
+
+document.getElementById("sellBtn").style.display="none";
+
+/* switch screen */
+
 document.querySelectorAll(".screen").forEach(el=>el.style.display="none");
 
 document.getElementById("screen-"+num).style.display="flex";
 
-/* скрываем кнопку */
-document.getElementById("sellBtn").style.display="none";
-
-/* закрываем клавиатуру */
-document.getElementById("seedInput").blur();
-
 }
 
-/* INPUT FIX */
-
-const input = document.getElementById("seedInput");
-const button = document.querySelector(".bottom-button");
-
-input.addEventListener("focus",()=>{
-button.classList.add("hidden");
-});
-
-input.addEventListener("blur",()=>{
-button.classList.remove("hidden");
-});
+/* close keyboard */
 
 document.addEventListener("touchstart",(e)=>{
+
+let input=document.getElementById("seedInput");
+
 if(!input.contains(e.target)){
 input.blur();
 }
+
 });
 
 </script>
 
 </body>
 </html>
+
